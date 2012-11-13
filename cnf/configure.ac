@@ -253,6 +253,8 @@ AC_SUBST(WITHGMP)
 AC_SUBST(INCLGMP)
 AC_SUBST(LINKGMP)
 
+AC_SUBST(GMP_CFLAGS)
+
 mkdir -p bin/$TARGET
 CONFIG_STATUS=bin/$TARGET/config.status
 
@@ -262,6 +264,6 @@ if test "$MAKEFILE" != Makefile; then
     ln -sf "$MAKEFILE" Makefile
 fi
 
-(cd hurwitz; ./configure TARGET=$TARGET)
+#(cd hurwitz; ./configure TARGET=$TARGET)
 
 AC_OUTPUT

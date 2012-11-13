@@ -13,7 +13,7 @@
 ##
 #############################################################################
 
-.PHONY: all lib doc clean distribute mrproper wwwdir checkblocks tarballs hurwitz
+.PHONY: all lib doc clean distribute mrproper wwwdir checkblocks tarballs
 
 LOCALBIN=bin/@TARGET@
 EXTERN=$(CURDIR)/bin/@TARGET@/extern
@@ -26,14 +26,16 @@ GAC=@GAC@
 GSLLIB=gsl-1.15
 GIVAROLIB=givaro-3.6.0
 
-all: $(LOCALBIN) @LIB_TARGET@ $(LOCALBIN)/fr_dll.so @JAVABUILD@ hurwitz
+all: $(LOCALBIN) @LIB_TARGET@ $(LOCALBIN)/fr_dll.so @JAVABUILD@
 
 lib:
 	echo Make sure you downloaded extern/$(GSLLIB).tar.gz (instructions in extern/GET_LIBARIES)
 	$(MAKE) gsllib
 
-hurwitz:
-	$(MAKE) -C $@
+info:
+	echo @INCLGMP@
+	echo @GMP_CFLAGS@
+
 
 extern/$(GSLLIB).tar.gz:
 	echo "I can't find $(GSLLIB), so I'm going to download it"
@@ -74,13 +76,13 @@ $(LOCALBIN)/rpoly.o: src/rpoly.c src/poly.h
 	$(CC) -c $< -o $@
 
 $(LOCALBIN)/p1.o: src/p1.c src/cpoly.C src/fr_dll.h
-	$(CC) -c $< -o $@ -I@GAPDIR@ -I@GAPDIR@/$(LOCALBIN) -DCONFIG_H
+	$(CC) -c $< -o $@ -I@GAPDIR@ -I@GAPDIR@/$(LOCALBIN) @GMP_CFLAGS@ -DCONFIG_H
 
 $(LOCALBIN)/fr_dll.o: src/fr_dll.c src/cpoly.C src/fr_dll.h
-	$(CC) -c $< -o $@ -I@GAPDIR@ -I@GAPDIR@/$(LOCALBIN) -DCONFIG_H
+	$(CC) -c $< -o $@ -I@GAPDIR@ -I@GAPDIR@/$(LOCALBIN) @GMP_CFLAGS@ -DCONFIG_H
 
 $(LOCALBIN)/findrat.o: src/findrat.c src/fr_dll.h
-	$(CC) -c $< -o $@ -I@GAPDIR@ -I@GAPDIR@/$(LOCALBIN) -DCONFIG_H
+	$(CC) -c $< -o $@ -I@GAPDIR@ -I@GAPDIR@/$(LOCALBIN) @GMP_CFLAGS@ -DCONFIG_H
 
 $(LOCALBIN)/fr_dll.so: $(LOCALBIN)/fr_dll.o $(LOCALBIN)/findrat.o $(LOCALBIN)/rpoly.o $(LOCALBIN)/p1.o
 	$(GAC) -d -o $@ $+ @GACFLAGS@
@@ -95,14 +97,13 @@ java/javaview.jar:
 
 clean:
 	rm -rf .version config.log $(LOCALBIN) `find doc -type l`
-	make -C hurwitz clean
+
 
 configure: cnf/Makefile.in cnf/configure.ac
 	(cd cnf; autoconf; mv -f configure ..)
 
 mrproper: clean
 	rm Makefile
-	rm hurwitz/Makefile
 
 .version: PackageInfo.g
 	grep '^Version :=' $< | awk -F'"' '{print $$2}' > $@
