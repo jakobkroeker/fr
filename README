@@ -14,8 +14,15 @@ the TODO file describes plans for future development, including
 computations of presentations for self-similar groups, interval arithmetic
 for complex dynamics, etc.
 
-The package is distributed in source form, and does not require anything
-else than a running GAP 4.5 or later. For updates, check
+The package is distributed in source form, and require a running GAP 4.5 or later
+with installed packages.
+
+Alternatively the required packages 
+Alnuth, autpgrp, polycyclic-2.10.1 and FGA
+can be downloaded and extracted into the $GAP_ROOT/pkg folder 
+from http://www.gap-system.org/Packages/
+
+ For updates, check
 
      http://www.uni-math.gwdg.de/laurent/FR/ (tar.gz formats)
 and
