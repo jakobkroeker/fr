@@ -8,6 +8,8 @@
 ##
 #############################################################################
 
+#AC_PREREQ(2.68)
+#LT_PREREQ([2.4.2])
 AC_PREREQ(2.68)
 LT_PREREQ([2.4.2])
 AC_INIT(fr,,laurent.bartholdi@gmail.com)
@@ -41,7 +43,7 @@ AC_SYS_IS_DARWIN
 EXTERN="\$(CURDIR)/bin/$TARGET/extern"
 LIB_TARGET=""
 
-AC_CHECK_LEVMAR
+#AC_CHECK_LEVMAR
 
 ################################################################
 # external programs configuration
@@ -82,12 +84,39 @@ AC_SUBST(LIB_TARGET)
 mkdir -p bin/$GAPARCH
 CONFIG_STATUS=bin/$GAPARCH/config.status
 
+#WITHGMP=""
+#INCLGMP=""
+#LINKGMP=""
+#if test "$GMPDIR" != ""; then
+#   WITHGMP="$WITHGMP --with-gmp=$GMPDIR"
+#fi
+#if test "$GMPINCLUDE" != ""; then
+#   WITHGMP="$WITHGMP --with-gmp-include=$GMPINCLUDE"
+#   INCLGMP="-I$GMPINCLUDE"
+#fi
+#if test "$GMPLIB" != ""; then
+#   WITHGMP="$WITHGMP --with-gmp-lib=$GMPLIB"
+#   LINKGMP="-L$GMPLIB"
+#fi
+
+#AC_SUBST(WITHGMP)
+#AC_SUBST(INCLGMP)
+#AC_SUBST(LINKGMP)
+
+#AC_SUBST(GMP_CFLAGS)
+
+#mkdir -p bin/$TARGET
+#CONFIG_STATUS=bin/$TARGET/config.status
+
+
 AC_CONFIG_FILES([$GAP_MAKEFILE:cnf/Makefile.in])
 
 if test "$GAP_MAKEFILE" != Makefile; then
     ln -sf "$GAP_MAKEFILE" Makefile
 fi
 
-AC_CONFIG_SUBDIRS(hurwitz)
+#AC_CONFIG_SUBDIRS(hurwitz)
+
+
 
 AC_OUTPUT
