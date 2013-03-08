@@ -1010,7 +1010,8 @@ MARKTIME@(2);
             elif c=fail then                
                 c := [];
                 for i in candidates do
-                    if (nexttime=@.ro and not IsBound(i.t)) or i.t=nexttime then
+                   # if (nexttime=@.ro and not IsBound(i.t)) or i.t=nexttime then
+		   if nexttime = @FR.ro and ( not IsBound( i.t ) or i.t = nexttime  ) then
                         Add(c,i);
                     fi;
                 od;
