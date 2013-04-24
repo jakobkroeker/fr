@@ -1011,7 +1011,7 @@ MARKTIME@(2);
                 c := [];
                 for i in candidates do
                    # if (nexttime=@.ro and not IsBound(i.t)) or i.t=nexttime then
-		   if nexttime = @FR.ro and ( not IsBound( i.t ) or i.t = nexttime  ) then
+		   if (nexttime = @FR.ro and  not IsBound( i.t )) or ( IsBound( i.t ) and  i.t = nexttime  ) then
                         Add(c,i);
                     fi;
                 od;
@@ -1142,7 +1142,7 @@ BindGlobal("LIFTSPIDER@", function(target,src,ratmap,poly)
     return [state,perm];
 end);
 
-BindGlobal("POSTCRITICALPOINTS@", function(f)
+BindGlobal("POSTCRITICALPOINTSX@", function(f, expectedNumCriticalPoints )
     # return [poly,[critical points],[post-critical points],[transitions]]
     # where poly=true/false says if there is a fixed point of maximal degree;
     # it is then the last element of <post-critical points>
@@ -1169,6 +1169,7 @@ BindGlobal("POSTCRITICALPOINTS@", function(f)
         od;
         i := i+1;
     od;
+    Info(InfoFR,3,"Barycentre");
     for c in cp do
         if Length(c)>2 then
             c[1] := P1Barycentre(c{Concatenation([1],[3..Length(c)])});
@@ -1186,6 +1187,7 @@ BindGlobal("POSTCRITICALPOINTS@", function(f)
         src := -i;
         deg := cp[i][2];
         repeat
+            Info(InfoFR,4,"repeat");
             c := P1Image(f,c);
             j := PositionProperty(cp,x->P1Distance(c,x[1])<@.p1eps);
             if j<>fail then
@@ -1204,7 +1206,13 @@ BindGlobal("POSTCRITICALPOINTS@", function(f)
                 if RemInt(Length(pcp),100)=0 then
                     Info(InfoFR,2,"Post-critical set contains at least ",Length(pcp)," points");
                 fi;
+                if expectedNumCriticalPoints<Length(pcp) then
+                   Print("too mamy Post-critical points");
+                   Info(InfoFR,2,"too mamy Post-critical points");
+                   return fail;
+                fi;
                 dst := Length(pcp);
+                Info(InfoFR,4,"Add transitions"); 
                 Add(transitions,[src,dst,deg]);
                 n := n+1;
                 if IsInt(poly) and IsIdenticalObj(pcp[n],cp[poly][1]) then
@@ -1212,6 +1220,7 @@ BindGlobal("POSTCRITICALPOINTS@", function(f)
                     poly := true;
                 fi;
             else
+                Info(InfoFR,4,"Add transitions and break"); 
                 Add(transitions,[src,dst,deg]);
                 break;
             fi;
@@ -1237,6 +1246,20 @@ BindGlobal("POSTCRITICALPOINTS@", function(f)
 
     return [poly,cp,pcp,transitions];
 end);
+
+
+BindGlobal("POSTCRITICALPOINTS@", function(f)
+    # return [poly,[critical points],[post-critical points],[transitions]]
+    # where poly=true/false says if there is a fixed point of maximal degree;
+    # it is then the last element of <post-critical points>
+    # critical points is a list of [point in P1,degree]
+    # post-critical points are points in P1
+    # post-critical graph is a list of [i,j,n] meaning pcp[i] maps to pcp[j]
+    # with local degree n>=1; or, if i<0, then cp[-i] maps to pcp[j].
+
+ return POSTCRITICALPOINTSX@(f,infinity);
+end);
+
 
 BindGlobal("ATTRACTINGCYCLES@", function(pcdata)
     local cycle, period, len, next, i, j, jj, periodic, critical;
